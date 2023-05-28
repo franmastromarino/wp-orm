@@ -4,25 +4,22 @@ namespace QuadLayers\WP_Orm\Entity;
 
 abstract class Single implements SingleInterface
 {
-    private array $defaults;
+    private array $defaults = [];
 
-    public function __construct(array $data = [])
-    {
-        // Initialize defaults with current values of properties
-        foreach (get_object_vars($this) as $property => $value) {
-            $this->defaults[$property] = $value;
-        }
+    // public function __construct(array $defaults = [])
+    // {
 
-        // // Set properties with data
-        // foreach ($data as $key => $value) {
-        //     if (property_exists($this, $key)) {
-        //         //error_log('key: ' . json_encode($key, JSON_PRETTY_PRINT));
-        //         //error_log('value: ' . json_encode($value, JSON_PRETTY_PRINT));
-        //         $this->$key = $value;
-        //     }
-        // }
-    }
+    //     $this->defaults = $defaults;
 
+    //     // // Set properties with data
+    //     // foreach ($data as $key => $value) {
+    //     //     if (property_exists($this, $key)) {
+    //     //         //error_log('key: ' . json_encode($key, JSON_PRETTY_PRINT));
+    //     //         //error_log('value: ' . json_encode($value, JSON_PRETTY_PRINT));
+    //     //         $this->$key = $value;
+    //     //     }
+    //     // }
+    // }
 
     public function __get($key): string
     {
@@ -61,6 +58,8 @@ abstract class Single implements SingleInterface
         }
     }
 
+    abstract public function getSchema(): array;
+
     public function getProperties(): array
     {
         $reflect = new \ReflectionClass($this);
@@ -77,4 +76,21 @@ abstract class Single implements SingleInterface
     {
         return $this->defaults;
     }
+    // public function getDefaults(array $schema = null): array
+    // {
+    //     $defaults = [];
+    //     if ($schema === null) {
+    //         $schema = $this->getSchema();
+    //     }
+
+    //     foreach ($schema['properties'] as $key => $property) {
+    //         if ($property['type'] === 'object' && isset($property['properties'])) {
+    //             $defaults[$key] = $this->getDefaults($property);
+    //         } elseif (isset($property['default'])) {
+    //             $defaults[$key] = $property['default'];
+    //         }
+    //     }
+
+    //     return $defaults;
+    // }
 }

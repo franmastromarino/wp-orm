@@ -122,7 +122,7 @@ class CollectionRepository implements CollectionRepositoryInterface
         $found = $this->getEntityIndex($primaryKeyValue);
 
         if ($found !== null) {
-            return false;
+            return null;
         }
 
         // Get the collection
@@ -132,7 +132,7 @@ class CollectionRepository implements CollectionRepositoryInterface
         array_push($collection, $entity);
 
         if (!$this->saveAll($collection)) {
-            return false;
+            return null;
         }
 
         // Save the updated collection

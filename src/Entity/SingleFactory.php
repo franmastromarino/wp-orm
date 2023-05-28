@@ -7,30 +7,34 @@ use QuadLayers\WP_Orm\Entity\Single;
 
 class SingleFactory
 {
-    private string $entityClass;
+    private Single $entity;
+    private SchemaValidator $validator;
 
     public function __construct(string $entityClass)
     {
-        $this->entityClass = $entityClass;
+        $this->entity = new $entityClass();
+        $this->validator = new SchemaValidator($this->entity->getSchema());
     }
 
     public function create(array $data): Single
     {
-        // Create a new instance of the entity
-        $entity = new $this->entityClass();
+        $data = $this->validator->getSanitizedData($data);
+        $defaults = $this->validator->getDefaults();
+
+        $this->entity->defaults = $defaults;
 
         // Use reflection to get the properties of the class
-        $reflection = new \ReflectionClass($entity);
+        $reflection = new \ReflectionClass($this->entity);
 
         // Loop through each data item
         foreach ($data as $property => $value) {
             // Check if the entity has the property and if the value is of the same type
-            if ($reflection->hasProperty($property) && gettype($value) === gettype($entity->$property)) {
+            if ($reflection->hasProperty($property) && gettype($value) === gettype($this->entity->$property)) {
                 // Set the value of the property
-                $entity->$property = $value;
+                $this->entity->$property = $value;
             }
         }
 
-        return $entity;
+        return $this->entity;
     }
 }
